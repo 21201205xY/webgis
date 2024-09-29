@@ -12,12 +12,6 @@ onMounted(()=>{
     url:'//services.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer'
   })
 
-  var customTerrainProvider = new Cesium.EllipsoidTerrainProvider({
-      ready:true,
-      hasVertexNormals:true,
-      hasWaterMask:true,
-  })
-
   var viewer = new Cesium.Viewer('cesiumContainer',{
     animation:false,
     baseLayerPicker:false,
@@ -26,8 +20,20 @@ onMounted(()=>{
         'https://services.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer',
     }),
     imageryProvider:custom,
-    terrainProvider:customTerrainProvider,
+    terrain: Cesium.Terrain.fromWorldTerrain({
+    requestWaterMask: true,
+    requestVertexNormals: true,
+    }),
   })
+
+  viewer.scene.setTerrain(
+    new Cesium.Terrain(
+      Cesium.ArcGISTiledElevationTerrainProvider.fromUrl(
+        "https://elevation3d.arcgis.com/arcgis/rest/services/WorldElevation3D/Terrain3D/ImageServer"
+      )
+    )
+  );
+
 })
 </script>
 
